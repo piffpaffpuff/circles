@@ -12,6 +12,7 @@ export class VisualizationModule {
         this.colorLabelCircle = "#ffffff";
         this.colorCircle = "rgba(179, 176, 175, 0.3)";
         this.colorPalette = ["#014540"];
+        this.selectedNode = null;
         
         // D3 elements
         this.svg = null;
@@ -98,14 +99,16 @@ export class VisualizationModule {
             .attr("cy", d => d.y)
             .attr("r", d => d.r)
             .attr("fill", d => this.getNodeColor(d))
-            .attr("stroke", "none")
-            .attr("stroke-width", "2px")
+            .attr("stroke", d => d === this.selectedNode ? "rgba(235, 230, 229, 1)" : "none")
+            .attr("stroke-width", d => d === this.selectedNode ? "3px" : "0px")
             .style("cursor", "pointer")
             .style("pointer-events", "all")
             .on("mouseover", (event, d) => {
-                d3.select(event.currentTarget)
-                    .attr("stroke", "rgba(255, 255, 255, 0.5)")
-                    .attr("stroke-width", "2px");
+                if (d !== this.selectedNode) {
+                    d3.select(event.currentTarget)
+                        .attr("stroke", "#908886")
+                        .attr("stroke-width", "1px");
+                }
 
                 tooltip
                     .style("opacity", 1)
@@ -114,9 +117,11 @@ export class VisualizationModule {
                     .style("top", (event.pageY - 10) + "px");
             })
             .on("mouseout", (event, d) => {
-                d3.select(event.currentTarget)
-                    .attr("stroke", "none")
-                    .attr("stroke-width", "0px");
+                if (d !== this.selectedNode) {
+                    d3.select(event.currentTarget)
+                        .attr("stroke", "none")
+                        .attr("stroke-width", "0px");
+                }
 
                 tooltip.style("opacity", 0);
             })
@@ -127,6 +132,21 @@ export class VisualizationModule {
             })
             .on("click", (event, d) => {
                 event.stopPropagation();
+                
+                // Remove stroke from previously selected node
+                if (this.selectedNode) {
+                    this.g.selectAll("circle")
+                        .filter(node => node === this.selectedNode)
+                        .attr("stroke", "none")
+                        .attr("stroke-width", "0px");
+                }
+
+                // Update selected node and add stroke
+                this.selectedNode = d;
+                d3.select(event.currentTarget)
+                    .attr("stroke", "#908886")
+                    .attr("stroke-width", "1px");
+
                 this.manager.currentSelectedNode = d;
                 this.manager.clickedNodeData = d.data;
                 this.manager.sidebarManager.updateSidebar(d);
