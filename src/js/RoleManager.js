@@ -335,7 +335,7 @@ export class RoleManager {
                     this.manager.currentSelectedNode = parent;
                     this.manager.clickedNodeData = parent.data;
                     this.manager.visualization.zoomTo(parent);
-                    this.manager.updateSidebar(parent);
+                    this.manager.sidebarManager.updateSidebar(parent);
                 }
             }
         });
@@ -372,7 +372,7 @@ export class RoleManager {
             this.manager.currentSelectedNode = newNode;
             this.manager.visualization.view = newNode;
             this.manager.visualization.zoomTo(newNode);
-            this.manager.updateSidebar(newNode);
+            this.manager.sidebarManager.updateSidebar(newNode);
         }
     }
 } 

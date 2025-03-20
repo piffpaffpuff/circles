@@ -2,6 +2,10 @@ import { VISUALIZATION_CONSTANTS, ELEMENT_IDS } from './utils/Constants.js';
 
 export class VisualizationModule {
     constructor(manager) {
+        if (typeof d3 === 'undefined') {
+            throw new Error('d3 is not loaded. Please check your script includes.');
+        }
+        
         this.manager = manager;
         this.colorTemplate = "#053255";
         this.colorLabel = "#ffffff";
@@ -25,11 +29,16 @@ export class VisualizationModule {
     init() {
         // Get container dimensions
         const container = document.getElementById(ELEMENT_IDS.CIRCLE_PACKING);
-        if (!container) return;  // Safety check
+        console.log('Container:', container);
+        if (!container) {
+            console.error('Circle packing container not found');
+            return;  // Safety check
+        }
 
         // Update dimensions
         this.manager.width = container.clientWidth || 800;
         this.manager.height = container.clientHeight || 600;
+        console.log('Dimensions:', this.manager.width, this.manager.height);
 
         // Clear any existing visualization
         d3.select(`#${ELEMENT_IDS.CIRCLE_PACKING} svg`).remove();
@@ -40,8 +49,10 @@ export class VisualizationModule {
             .attr("width", this.manager.width)
             .attr("height", this.manager.height)
             .style("pointer-events", "all");
+        console.log('SVG created:', this.svg.node());
 
         this.g = this.svg.append("g");
+        console.log('G element created:', this.g.node());
 
         // Create pack layout
         this.pack = d3.pack()
@@ -49,16 +60,19 @@ export class VisualizationModule {
             .padding(VISUALIZATION_CONSTANTS.CIRCLE_PADDING);
 
         // Render visualization and select root by default
+        console.log('About to render visualization');
         this.renderVisualization();
         
         // Get the root node and select it
         const root = d3.hierarchy(this.manager.companyData);
+        console.log('Root node:', root);
         this.manager.currentSelectedNode = root;
         this.manager.clickedNodeData = root.data;
-        this.manager.updateSidebar(root);
+        this.manager.sidebarManager.updateSidebar(root);
     }
 
     renderVisualization() {
+        console.log('Starting renderVisualization');
         // Clear previous visualization
         this.g.selectAll("*").remove();
 
@@ -71,6 +85,7 @@ export class VisualizationModule {
                     return a.data.name.localeCompare(b.data.name);
                 })
         );
+        console.log('Packed root:', root);
 
         // Store tooltip reference for event handlers
         const tooltip = this.tooltip;
@@ -114,7 +129,7 @@ export class VisualizationModule {
                 event.stopPropagation();
                 this.manager.currentSelectedNode = d;
                 this.manager.clickedNodeData = d.data;
-                this.manager.updateSidebar(d);
+                this.manager.sidebarManager.updateSidebar(d);
                 this.zoomTo(d);
             });
 

@@ -1,6 +1,6 @@
 import { VisualizationModule } from './VisualizationModule.js';
 import { MemberManager } from './MemberManager.js';
-import { TemplateManager } from './TemplateManager.js';
+import { RoleTemplateManager } from './RoleTemplateManager.js';
 import { RoleManager } from './RoleManager.js';
 import { ModalManager } from './ModalManager.js';
 import { STORAGE_KEYS, ELEMENT_IDS, MODAL_IDS, CSS_CLASSES } from './utils/Constants.js';
@@ -27,7 +27,7 @@ export class CircleManager {
         // Initialize modules
         this.visualization = new VisualizationModule(this);
         this.memberManager = new MemberManager(this);
-        this.templateManager = new TemplateManager(this);
+        this.templateManager = new RoleTemplateManager(this);
         this.roleManager = new RoleManager(this);
         this.modalManager = new ModalManager(this);
 

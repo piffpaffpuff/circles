@@ -1,6 +1,6 @@
 import { MODAL_IDS, ELEMENT_IDS, CSS_CLASSES, DATA_ATTRIBUTES } from './utils/Constants.js';
 
-export class TemplateManager {
+export class RoleTemplateManager {
     constructor(manager) {
         this.manager = manager;
         this.templatesData = {

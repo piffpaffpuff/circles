@@ -236,7 +236,7 @@ export class MemberManager {
         // Refresh the modal and sidebar
         this.showAssignMembersModal(group);
         if (this.manager.currentSelectedNode && this.manager.currentSelectedNode.data.id === groupId) {
-            this.manager.updateSidebar(this.manager.currentSelectedNode);
+            this.manager.sidebarManager.updateSidebar(this.manager.currentSelectedNode);
         }
     }
 
@@ -264,7 +264,7 @@ export class MemberManager {
             // Update sidebar if we're viewing the root node
             if (this.manager.currentSelectedNode && 
                 this.manager.currentSelectedNode.data === this.manager.companyData) {
-                this.manager.updateSidebar(this.manager.currentSelectedNode);
+                this.manager.sidebarManager.updateSidebar(this.manager.currentSelectedNode);
             }
             
             this.manager.modalManager.hideModal(MODAL_IDS.ADD_MEMBER);
@@ -285,7 +285,7 @@ export class MemberManager {
                 this.manager.modalManager.hideModal(MODAL_IDS.EDIT_MEMBER);
                 
                 if (this.manager.currentSelectedNode) {
-                    this.manager.updateSidebar(this.manager.currentSelectedNode);
+                    this.manager.sidebarManager.updateSidebar(this.manager.currentSelectedNode);
                 }
             }
         });
@@ -299,7 +299,7 @@ export class MemberManager {
                     this.manager.modalManager.hideModal(MODAL_IDS.EDIT_MEMBER);
                     
                     if (this.manager.currentSelectedNode) {
-                        this.manager.updateSidebar(this.manager.currentSelectedNode);
+                        this.manager.sidebarManager.updateSidebar(this.manager.currentSelectedNode);
                     }
                 }
             }

@@ -83,6 +83,7 @@ button:hover {
     color: #1C1B1F;
     padding: 20px;
     overflow-y: auto;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
     flex-shrink: 0; /* Prevents sidebar from shrinking */
 }
