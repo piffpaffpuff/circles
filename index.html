@@ -12,8 +12,7 @@
 </head>
 <body>
     <div class="container">
-        
-        <div class="main-content">
+        <div class="visualization-section">
             <div class="controls">
                 <div class="controls-left">
                     <button id="reset-btn" class="main-control-btn">Circles</button>
@@ -21,10 +20,9 @@
                 </div>
                 <div class="controls-right"></div>
             </div>
-
             <div class="visualization-container">
                 <div id="circle-packing"></div>
-            </div> 
+            </div>
         </div>
 
         <div class="sidebar" id="sidebar">
@@ -41,8 +39,10 @@
                 <input type="text" id="circle-driver" placeholder="Driver">
                 <textarea id="circle-description" placeholder="Description" rows="3"></textarea>
                 <div class="modal-actions">
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-add-circle" class="confirm-btn">Add Circle</button>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-add-circle" class="confirm-btn">Add Circle</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -65,8 +65,10 @@
                     </div>
                 </div>
                 <div class="modal-actions">
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-add-role" class="confirm-btn">Add Role</button>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-add-role" class="confirm-btn">Add Role</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -81,9 +83,13 @@
                     <option value="">Move to another circle...</option>
                 </select>
                 <div class="modal-actions">
-                    <button id="delete-circle" class="delete-btn">Delete Circle</button>
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-edit-circle" class="confirm-btn">Save Changes</button>
+                    <div class="left-buttons">
+                        <button id="delete-circle" class="delete-btn">Delete Circle</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-edit-circle" class="confirm-btn">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,9 +104,13 @@
                     <option value="">Move to another circle...</option>
                 </select>
                 <div class="modal-actions">
-                    <button id="delete-role" class="delete-btn">Delete Role</button>
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-edit-role" class="confirm-btn">Save Changes</button>
+                    <div class="left-buttons">
+                        <button id="delete-role" class="delete-btn">Delete Role</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-edit-role" class="confirm-btn">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -111,8 +121,10 @@
                 <input type="text" id="member-name" placeholder="Member Name" required>
                 <textarea id="member-description" placeholder="Description" rows="3"></textarea>
                 <div class="modal-actions">
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-add-member" class="confirm-btn">Add Member</button>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-add-member" class="confirm-btn">Add Member</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,9 +135,13 @@
                 <input type="text" id="edit-member-name" placeholder="Member Name" required>
                 <textarea id="edit-member-description" placeholder="Description" rows="3"></textarea>
                 <div class="modal-actions">
-                    <button id="delete-member" class="delete-btn">Delete Member</button>
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-edit-member" class="confirm-btn">Save Changes</button>
+                    <div class="left-buttons">
+                        <button id="delete-member" class="delete-btn">Delete Member</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-edit-member" class="confirm-btn">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -137,7 +153,9 @@
                     <!-- Available members will be populated here -->
                 </div>
                 <div class="modal-actions">
-                    <button class="cancel-btn modal-cancel">Close</button>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -179,8 +197,10 @@
                 <input type="text" id="template-name" placeholder="Template Name" required>
                 <textarea id="template-description" placeholder="Template Description" rows="3"></textarea>
                 <div class="modal-actions">
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-add-template" class="confirm-btn">Add Template</button>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-add-template" class="confirm-btn">Add Template</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -191,9 +211,13 @@
                 <input type="text" id="edit-template-name" placeholder="Template Name" required>
                 <textarea id="edit-template-description" placeholder="Template Description" rows="3"></textarea>
                 <div class="modal-actions">
-                    <button id="delete-template" class="delete-btn">Delete Template</button>
-                    <button class="cancel-btn modal-cancel">Cancel</button>
-                    <button id="confirm-edit-template" class="confirm-btn">Save Changes</button>
+                    <div class="left-buttons">
+                        <button id="delete-template" class="delete-btn">Delete Template</button>
+                    </div>
+                    <div class="right-buttons">
+                        <button class="cancel-btn modal-cancel">Cancel</button>
+                        <button id="confirm-edit-template" class="confirm-btn">Save Changes</button>
+                    </div>
                 </div>
             </div>
         </div>
