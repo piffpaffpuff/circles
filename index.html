@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Structure Visualization</title>
+    <!-- External Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.2/d3.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        
+        <div class="main-content">
+            <div class="controls">
+                <div class="controls-left">
+                    <button id="reset-btn" class="main-control-btn">Circles</button>
+                    <button id="settings-btn" class="main-control-btn">Settings</button>
+                </div>
+                <div class="controls-right"></div>
+            </div>
+
+            <div class="visualization-container">
+                <div id="circle-packing"></div>
+            </div> 
+        </div>
+
+        <div class="sidebar" id="sidebar">
+            <h2>Company Structure</h2>
+            <div class="sidebar-placeholder">
+                Click on a circle to view details
+            </div>
+        </div>
+
+        <div id="new-circle-modal">
+            <div class="modal-content">
+                <h2>Add New Circle</h2>
+                <input type="text" id="circle-name" placeholder="Circle Name" required>
+                <input type="text" id="circle-driver" placeholder="Driver">
+                <textarea id="circle-description" placeholder="Description" rows="3"></textarea>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-add-circle" class="confirm-btn">Add Circle</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="new-role-modal">
+            <div class="modal-content">
+                <h2>Add New Role</h2>
+                <div class="role-type-toggle">
+                    <button class="toggle-btn active" data-type="new">New Role</button>
+                    <button class="toggle-btn" data-type="template">From Template</button>
+                </div>
+                <div class="role-form">
+                    <input type="text" id="role-name" placeholder="Role Name" required>
+                    <input type="text" id="role-driver" placeholder="Driver">
+                    <textarea id="role-description" placeholder="Description" rows="3"></textarea>
+                </div>
+                <div class="template-selection" style="display: none;">
+                    <div class="templates-list" id="role-templates-list">
+                        <!-- Templates will be populated here -->
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-add-role" class="confirm-btn">Add Role</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-circle-modal">
+            <div class="modal-content">
+                <h2>Edit Circle</h2>
+                <input type="text" id="edit-circle-name" placeholder="Circle Name" required>
+                <input type="text" id="edit-circle-driver" placeholder="Driver">
+                <textarea id="edit-circle-description" placeholder="Description" rows="3"></textarea>
+                <select id="edit-circle-parent" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">Move to another circle...</option>
+                </select>
+                <div class="modal-actions">
+                    <button id="delete-circle" class="delete-btn">Delete Circle</button>
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-edit-circle" class="confirm-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-role-modal">
+            <div class="modal-content">
+                <h2>Edit Role</h2>
+                <input type="text" id="edit-role-name" placeholder="Role Name" required>
+                <input type="text" id="edit-role-driver" placeholder="Driver">
+                <textarea id="edit-role-description" placeholder="Description" rows="3"></textarea>
+                <select id="edit-role-parent" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                    <option value="">Move to another circle...</option>
+                </select>
+                <div class="modal-actions">
+                    <button id="delete-role" class="delete-btn">Delete Role</button>
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-edit-role" class="confirm-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-member-modal">
+            <div class="modal-content">
+                <h2>Add Member</h2>
+                <input type="text" id="member-name" placeholder="Member Name" required>
+                <textarea id="member-description" placeholder="Description" rows="3"></textarea>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-add-member" class="confirm-btn">Add Member</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-member-modal">
+            <div class="modal-content">
+                <h2>Edit Member</h2>
+                <input type="text" id="edit-member-name" placeholder="Member Name" required>
+                <textarea id="edit-member-description" placeholder="Description" rows="3"></textarea>
+                <div class="modal-actions">
+                    <button id="delete-member" class="delete-btn">Delete Member</button>
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-edit-member" class="confirm-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="assign-members-modal">
+            <div class="modal-content">
+                <h2>Assign Members</h2>
+                <div class="member-list" id="assignable-members">
+                    <!-- Available members will be populated here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="settings-modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Settings</h2>
+                </div>
+                <div class="settings-actions">
+                    <div class="settings-section">
+                        <div class="modal-header">
+                            <h3>Members Management</h3>
+                            <button id="add-member-btn" class="main-control-btn">Add Member</button>
+                        </div>
+                        <div class="member-list" id="members-container">
+                            <!-- Members will be populated here -->
+                        </div>
+                    </div>
+                    <div class="settings-section">
+                        <div class="modal-header">
+                            <h3>Role Templates Management</h3>
+                            <button id="add-template-btn" class="main-control-btn">Add Template</button>
+                        </div>
+                        <div class="templates-list" id="templates-container">
+                            <!-- Templates will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-template-modal">
+            <div class="modal-content">
+                <h2>Add Role Template</h2>
+                <input type="text" id="template-name" placeholder="Template Name" required>
+                <textarea id="template-description" placeholder="Template Description" rows="3"></textarea>
+                <div class="modal-actions">
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-add-template" class="confirm-btn">Add Template</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="edit-template-modal">
+            <div class="modal-content">
+                <h2>Edit Role Template</h2>
+                <input type="text" id="edit-template-name" placeholder="Template Name" required>
+                <textarea id="edit-template-description" placeholder="Template Description" rows="3"></textarea>
+                <div class="modal-actions">
+                    <button id="delete-template" class="delete-btn">Delete Template</button>
+                    <button class="cancel-btn modal-cancel">Cancel</button>
+                    <button id="confirm-edit-template" class="confirm-btn">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Module scripts -->
+    <script type="module" src="src/js/utils/Constants.js"></script>
+    <script type="module" src="src/js/VisualizationModule.js"></script>
+    <script type="module" src="src/js/MemberManager.js"></script>
+    <script type="module" src="src/js/TemplateManager.js"></script>
+    <script type="module" src="src/js/RoleManager.js"></script>
+    <script type="module" src="src/js/ModalManager.js"></script>
+    <script type="module" src="src/js/CircleManager.js"></script>
+    <script type="module" src="src/js/main.js"></script>
+</body>
+</html>
