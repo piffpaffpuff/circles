@@ -24,9 +24,15 @@ body {
     font-size: 14px;
     margin: 0;
     padding: 0;
-    background-color: rgba(247, 241, 240, 1);
+    background-color: #f7f1f0;
     height: 100%;
     width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    color: #1C1B1F;
+    margin-block: 0;
 }
 
 button, input, textarea {
@@ -40,7 +46,7 @@ button {
     color: #1C1B1F;
     border: none;
     cursor: pointer;
-    border-radius: 12px;
+    border-radius: 32px;
     transition: all 0.2s ease;
 }
 
@@ -70,28 +76,43 @@ button:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(247, 241, 240, 0.5);
+    background-color: #f7f1f0;
     overflow: hidden;
     padding: 0;
-    backdrop-filter: blur(5px);
 }
 
 /* Sidebar */
 .sidebar {
     width: 300px;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: #ffffff;
     color: #1C1B1F;
     padding: 20px;
     overflow-y: auto;
-    border-left: 1px solid rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
     flex-shrink: 0; /* Prevents sidebar from shrinking */
+    font-size: 1em;
+
+}
+
+.sidebar h2, .sidebar h3, .sidebar h4 {
+    margin: 0;
+    font-size: 1em;
 }
 
 .sidebar h2 {
-    margin: 0 0 20px 0;
-    font-size: 1.6rem;
-    color: #1C1B1F;
+    font-size: 1.2em;
+}
+
+.sidebar .description {
+    margin: 0;
+    font-size: 1.2em;
+}
+
+.role-group {
+    margin-bottom: 20px;
+}
+
+.role-group h4 {
+    margin-bottom: 10px;
 }
 
 .sidebar-placeholder {
@@ -102,13 +123,14 @@ button:hover {
 
 /* Members and Templates */
 .members-section {
-    margin-top: 20px;
+    margin-top: 30px;
 }
 
 .members-section h3 {
     font-size: 1.2rem;
     margin: 0 0 10px 0;
     color: #1C1B1F;
+    display: none;
 }
 
 .member-list,
@@ -125,10 +147,9 @@ button:hover {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
     margin: 10px 0;
     border-radius: 12px;
-    background-color: #F7F1F0;
+    background-color: #eae6e5;
 }
 
 .member-item .description {
@@ -147,10 +168,7 @@ button:hover {
 .member-delete,
 .template-edit,
 .template-delete {
-    border: none;
-    padding: 6px 12px;
-    border-radius: 12px;
-    cursor: pointer;
+
 }
 
 .member-edit,
@@ -188,10 +206,9 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #F7F1F0;
+    background-color: #f7f1f0;
     padding: 12px 16px;
     border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .assigned-member span {
@@ -201,10 +218,6 @@ button:hover {
 .remove-member {
     background-color: #EE5246;
     color: white;
-    border: none;
-    padding: 6px 12px;
-    border-radius: 12px;
-    cursor: pointer;
 }
 
 .remove-member:hover {
@@ -246,12 +259,13 @@ button:hover {
 }
 
 .action-btn {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: hsla(176, 100%, 11%, 0.852);
+    color: rgba(255, 255, 255, 0.891);
     backdrop-filter: blur(30px);
 }
 
 .action-btn:hover {
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: hsla(176, 100%, 15%, 0.852);
 }
 
 /* Modals */
@@ -311,7 +325,7 @@ button:hover {
     padding: 10px;
     margin: 10px 0;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 8px;
     box-sizing: border-box;
 }
 
@@ -381,7 +395,6 @@ button:hover {
     padding: 15px;
     background-color: #F7F1F0;
     border-radius: 12px;
-    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .settings-section h3 {

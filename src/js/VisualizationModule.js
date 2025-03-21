@@ -10,7 +10,7 @@ export class VisualizationModule {
         this.colorTemplate = "#053255";
         this.colorLabel = "#ffffff";
         this.colorLabelCircle = "#ffffff";
-        this.colorCircle = "rgba(179, 176, 175, 0.3)";
+        this.colorCircle = "rgba(58, 54, 53, 0.07)";
         this.colorPalette = ["#014540"];
         this.selectedNode = null;
         
