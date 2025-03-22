@@ -161,11 +161,7 @@ export class CircleManager {
     }
 
     handleReset() {
-        this.visualization.renderVisualization();
-        const root = d3.hierarchy(this.companyData);
-        this.currentSelectedNode = root;
-        this.clickedNodeData = root.data;
-        this.sidebarManager.updateSidebar(root);
+        this.visualization.handleReset();
     }
 
     saveToLocalStorage() {

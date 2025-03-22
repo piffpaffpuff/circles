@@ -7,11 +7,13 @@ export class VisualizationModule {
         }
         
         this.manager = manager;
-        this.colorTemplate = "#053255";
-        this.colorLabel = "#ffffff";
-        this.colorLabelCircle = "#ffffff";
-        this.colorCircle = "rgba(58, 54, 53, 0.07)";
-        this.colorPalette = ["#014540"];
+        this.colorCircle = "#1C1B1F";
+        this.colorCircleLabel = "#f7f1f0";
+        this.colorStrokeCircle = "#f7f1f050";
+        this.colorRole = ["#122E4F", "#1F4B49"]; // Custom color theme
+        this.colorRoleLabel = "#f7f1f0";
+        this.colorTemplate = "#EBB8F6";
+        this.colorTemplateLabel = "#f7f1f0";
         this.selectedNode = null;
         
         // D3 elements
@@ -19,6 +21,7 @@ export class VisualizationModule {
         this.g = null;
         this.pack = null;
         this.view = null;
+        this.focus = null;
 
         // Create tooltip div
         this.tooltip = d3.select("body")
@@ -49,8 +52,12 @@ export class VisualizationModule {
             .append("svg")
             .attr("width", this.manager.width)
             .attr("height", this.manager.height)
-            .style("pointer-events", "all");
-        console.log('SVG created:', this.svg.node());
+            .attr("viewBox", [-this.manager.width / 2, -this.manager.height / 2, this.manager.width, this.manager.height])
+            .style("display", "block")
+            .style("width", "100%")
+            .style("height", "100%")
+            .style("background", "transparent")
+            .style("cursor", "pointer");
 
         this.g = this.svg.append("g");
         console.log('G element created:', this.g.node());
@@ -92,133 +99,152 @@ export class VisualizationModule {
         const tooltip = this.tooltip;
 
         // Add circles with all event handlers
-        const nodes = this.g.selectAll("circle")
-            .data(root.descendants())
+        const node = this.g.append("g")
+            .selectAll("circle")
+            .data(root)
             .join("circle")
-            .attr("cx", d => d.x)
-            .attr("cy", d => d.y)
-            .attr("r", d => d.r)
             .attr("fill", d => this.getNodeColor(d))
-            .attr("stroke", d => d === this.selectedNode ? "rgba(235, 230, 229, 1)" : "none")
-            .attr("stroke-width", d => d === this.selectedNode ? "3px" : "0px")
+            .attr("stroke", d => d.data.templateId || d.data.isRole ? "none" : this.colorStrokeCircle)
             .style("cursor", "pointer")
             .style("pointer-events", "all")
             .on("mouseover", (event, d) => {
-                if (d !== this.selectedNode) {
-                    d3.select(event.currentTarget)
-                        .attr("stroke", "#908886")
-                        .attr("stroke-width", "1px");
-                }
-
                 tooltip
                     .style("opacity", 1)
                     .html(`${d.data.name}`)
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 10) + "px");
             })
-            .on("mouseout", (event, d) => {
-                if (d !== this.selectedNode) {
-                    d3.select(event.currentTarget)
-                        .attr("stroke", "none")
-                        .attr("stroke-width", "0px");
-                }
-
+            .on("mouseout", () => {
                 tooltip.style("opacity", 0);
             })
-            .on("mousemove", (event, d) => {
+            .on("mousemove", (event) => {
                 tooltip
                     .style("left", (event.pageX + 10) + "px")
                     .style("top", (event.pageY - 10) + "px");
             })
             .on("click", (event, d) => {
                 event.stopPropagation();
+                this.focus !== d && (this.zoomTo(d), event.stopPropagation());
                 
-                // Remove stroke from previously selected node
-                if (this.selectedNode) {
-                    this.g.selectAll("circle")
-                        .filter(node => node === this.selectedNode)
-                        .attr("stroke", "none")
-                        .attr("stroke-width", "0px");
-                }
-
-                // Update selected node and add stroke
+                // Update selected node and manager state
                 this.selectedNode = d;
-                d3.select(event.currentTarget)
-                    .attr("stroke", "#908886")
-                    .attr("stroke-width", "1px");
-
                 this.manager.currentSelectedNode = d;
                 this.manager.clickedNodeData = d.data;
                 this.manager.sidebarManager.updateSidebar(d);
-                this.zoomTo(d);
             });
 
         // Add labels
-        this.g.selectAll("text")
+        const label = this.g.append("g")
+            .style("font-family", "sans-serif")
+            .style("font-weight", "bold")
+            .attr("pointer-events", "none") // Make labels non-interactive
+            .selectAll("text")
             .data(root.descendants())
             .join("text")
-            .attr("x", d => d.x)
-            .attr("y", d => d.y)
-            .attr("text-anchor", "middle")
-            .attr("alignment-baseline", "middle")
-            .attr("font-size", d => Math.min(d.r / 3, 12))
-            .text(d => d.data.name)
-            .style("pointer-events", "none")
-            .style("fill", d => d.children ? this.colorLabelCircle : this.colorLabel)
-            .style("font-weight", "bold");
-
-        // Initial zoom to root
-        this.view = root;
-        this.zoomTo(root);
-    }
-
-    zoomTo(d) {
-        const focus0 = this.view;
-        const focus1 = d;
-
-        this.view = focus1;
-        
-        const k = Math.min(
-            this.manager.width / (focus1.r * 3),
-            this.manager.height / (focus1.r * 3)
-        );
-        const x = this.manager.width / 2 - focus1.x * k;
-        const y = this.manager.height / 2 - focus1.y * k;
-        
-        this.g.transition()
-            .duration(VISUALIZATION_CONSTANTS.TRANSITION_DURATION)
-            .attr("transform", `translate(${x},${y}) scale(${k})`);
-
-        this.g.selectAll("text")
-            .transition()
-            .duration(VISUALIZATION_CONSTANTS.TRANSITION_DURATION)
-            .style("opacity", node => {
-                if (node.depth === 0) return 0;
-                // Show label if it's either:
-                // 1. A child of the focused node
-                // 2. The focused node itself, but only if it's a leaf node (no children)
-                return (node.parent === focus1 || (node === focus1 && !node.children)) ? 1 : 0;
+            .style("fill", d => {
+                if (d.data.templateId) return this.colorTemplateLabel;
+                if (d.data.isRole) return this.colorRoleLabel;
+                return this.colorCircleLabel;
             })
-            .attr("font-size", node => {
-                return Math.min(node.r / 3 * k, 12) + "px";
+            .style("display", "none") // Start with all labels hidden
+            .style("font-size", d => Math.min(d.r / 3, 12))
+            .attr("text-anchor", "middle")
+            .attr("dominant-baseline", "middle")
+            .text(d => d.data.name);
+
+        // Create zoom behavior
+        const zoom = d3.zoom()
+            .scaleExtent([1, 8])
+            .on("zoom", (event) => {
+                const { transform } = event;
+                this.g.attr("transform", transform);
+                this.g.attr("stroke-width", 1 / transform.k);
             });
+
+        // Initialize position and zoom
+        this.focus = root;
+        let view;
+        this.svg.on("click", (event) => {
+            if (this.focus !== root) {
+                this.zoomTo(root);
+                event.stopPropagation();
+            }
+        });
+
+        const zoomTo = (v) => {
+            // Adjust the scaling factor to ensure the circle fits within the viewport
+            // Add some padding (0.95) to ensure we don't zoom too close to the edges
+            const k = Math.min(
+                this.manager.width / v[2],
+                this.manager.height / v[2]
+            ) * 0.95;
+
+            view = v;
+
+            label.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
+            node.attr("transform", d => `translate(${(d.x - v[0]) * k},${(d.y - v[1]) * k})`);
+            node.attr("r", d => d.r * k);
+        };
+
+        this.zoomTo = (d) => {
+            const focus0 = this.focus;
+            this.focus = d;
+
+            const transition = this.svg.transition()
+                .duration(VISUALIZATION_CONSTANTS.TRANSITION_DURATION)
+                .tween("zoom", () => {
+                    // Adjust the target zoom to ensure the circle fits
+                    const i = d3.interpolateZoom(view, [this.focus.x, this.focus.y, this.focus.r * 2.1]);
+                    return t => zoomTo(i(t));
+                });
+
+            // Update label visibility
+            label
+                .transition(transition)
+                .style("display", d => {
+                    // Show label if:
+                    // 1. It's a child of the focused node, OR
+                    // 2. It's the focused node itself AND it's a leaf node
+                    return d.parent === this.focus || (d === this.focus && !d.children) ? "inline" : "none";
+                })
+                .style("fill-opacity", d => {
+                    return d.parent === this.focus || (d === this.focus && !d.children) ? 1 : 0;
+                });
+        };
+
+        // Initial zoom with adjusted scaling
+        zoomTo([root.x, root.y, root.r * 2.1]);
+
+        // Show initial labels (root's children)
+        label
+            .filter(d => d.parent === root)
+            .style("display", "inline")
+            .style("fill-opacity", 1);
     }
 
     getNodeColor(node) {
         if (node.data.templateId) return this.colorTemplate;
-        if (node.data.isRole) return this.colorPalette[0];
+        if (node.data.isRole) {
+            // Use the node's id to consistently assign a color from the custom palette
+            const colorIndex = Math.abs(node.data.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % this.colorRole.length;
+            return this.colorRole[colorIndex];
+        }
         if (node.children || node.data.isGroup) return this.colorCircle;
         
-        // Only try to get color from parent's children if parent exists
-        if (node.parent && node.parent.children) {
-            const colorIndex = node.depth > 1 
-                ? node.parent.children.indexOf(node) 
-                : node.parent.children.indexOf(node);
-            
-            return this.colorPalette[colorIndex % this.colorPalette.length];
-        }
-        
         // Default color if no parent or children
-        return this.colorPalette[0];
+        return this.colorRole[0];
+    }
+
+    handleReset() {
+        const root = d3.hierarchy(this.manager.companyData);
+        this.currentSelectedNode = root;
+        this.manager.clickedNodeData = root.data;
+        
+        // Trigger the same click behavior as clicking the root circle
+        const event = new Event('click');
+        event.stopPropagation = () => {}; // Mock stopPropagation
+        this.svg.node().dispatchEvent(event);
+        
+        this.manager.sidebarManager.updateSidebar(root);
     }
 } 

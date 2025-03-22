@@ -20,7 +20,7 @@ export class SidebarManager {
         
         if (!node) {
             sidebar.innerHTML = `
-                <h2>Company Structure</h2>
+                <h2>Circles</h2>
                 <div class="sidebar-placeholder">
                     Click on a circle to view details
                 </div>
@@ -149,10 +149,10 @@ export class SidebarManager {
             `;
         } else {
             controlsRight.innerHTML = `
+                <button id="assign-members-btn" class="${CSS_CLASSES.ACTION_BTN}">Assign Members</button>
+                <button id="edit-circle-btn" class="${CSS_CLASSES.ACTION_BTN}">Edit Circle</button>
                 <button id="add-circle-btn" class="${CSS_CLASSES.ACTION_BTN}">Add Circle</button>
                 <button id="add-role-btn" class="${CSS_CLASSES.ACTION_BTN}">Add Role</button>
-                <button id="edit-circle-btn" class="${CSS_CLASSES.ACTION_BTN}">Edit Circle</button>
-                <button id="assign-members-btn" class="${CSS_CLASSES.ACTION_BTN}">Assign Members</button>
             `;
         }
 
